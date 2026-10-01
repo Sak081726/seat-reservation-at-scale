@@ -68,7 +68,8 @@ def main():
             token = app.issue_token("limited-user")
         try:
             code, body = request(base, "POST", path, payload, token)
-            return kind, code, body.get("error", "replay" if code == 200 else "confirmed")
+            label = "replay" if code == 200 else "confirmed" if code == 201 else "upstream-error"
+            return kind, code, body.get("error", label)
         except Exception as error:
             return kind, 0, type(error).__name__
 
