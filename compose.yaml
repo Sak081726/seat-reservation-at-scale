@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_PATH: /data/reservations.db
+      AUTH_SECRET: ${AUTH_SECRET:-development-secret-change-me}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-development-admin-token}
+    volumes:
+      - reservations:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  reservations:
